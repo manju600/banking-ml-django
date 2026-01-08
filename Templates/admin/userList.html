@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Periodicity - Admin Dashboard</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Roboto Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Financial Data Background -->
+    <div class="data-background"></div>
+    <div class="data-overlay" id="dataOverlay"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo"><i class="fas fa-chart-line mr-2"></i>Transaction Analytics</a>
+            <div class="menu-toggle" id="mobileMenu">☰</div>
+            <div class="nav-menu" id="navMenu">
+                <div class="datetime">
+                    <span class="data-loader"></span>
+                    <span id="datetime"></span>
+                </div>
+                <a href="adminHome" class="nav-btn"><i class="fas fa-home mr-1"></i>Home</a>
+                <a href="userList" class="nav-btn"><i class="fas fa-user mr-1"></i>User Details</a>
+                <a href="log" class="nav-btn"><i class="fas fa-sign-out-alt mr-1"></i>Log Out</a>
+                <a href="#about" class="nav-btn"><i class="fas fa-info-circle mr-1"></i>About Us</a>
+            </div>
+        </div>
+    </nav>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <!-- Hero Section -->
+    <section class="admin-home">
+        <div class="section-card">
+            <h1>Welcome to the Transaction Analytics Admin Dashboard</h1>
+            <p>Manage users, oversee periodicity detection processes, and maintain the analytics platform efficiently.</p>
+            <section>
+                <h2><i class="fas fa-users"></i> User Management</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Login ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td data-label="ID">{{ user.id }}</td>
+                            <td data-label="Login ID">{{ user.loginid }}</td>
+                            <td data-label="Name">{{ user.name }}</td>
+                            <td data-label="Email">{{ user.email }}</td>
+                            <td data-label="Status">{{ user.status }}</td>
+                            <td data-label="Action">
+                                {% if user.status == 'Active' %}
+                                <a href="deactivate_user?id={{user.id}}" class="btn"
+                                    style="color: #FF4500;">Deactivate</a>
+                                {% else %}
+                                <a href="activate_user?id={{user.id}}" class="btn" style="color: #00FF00;">Activate</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </section>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <section id="key-functions" class="section-card">
+            <h2><i class="fas fa-cogs"></i> Key Admin Functions</h2>
+            <ul style="text-align: left; max-width: 1000px; margin: 20px auto;">
+                <li><strong>User Management:</strong> Approve, edit, or deactivate user accounts for secure access.</li>
+                <li><strong>Periodicity Detection:</strong> Review and adjust ML-driven periodicity analysis parameters.</li>
+                <li><strong>Data Oversight:</strong> Monitor transactional data integrity and model inputs.</li>
+                <li><strong>Analytics Dashboard:</strong> Track periodicity detection metrics and model performance.</li>
+            </ul>
+        </section>
+
+        <section id="admin-tools" class="section-card">
+            <h2><i class="fas fa-tools"></i> Admin Tools</h2>
+            <ul style="text-align: left; max-width: 1000px; margin: 20px auto;">
+                <li>Real-time monitoring of transaction periodicity detection.</li>
+                <li>Secure audit logs for all admin actions.</li>
+                <li>Customizable ML model parameters for periodicity analysis.</li>
+                <li>Automated alerts for significant periodicity patterns or anomalies.</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-gradient" style="color: #ccc;">
+        <div class="container mx-auto text-center">
+            <p class="text">© 2025 Transaction Analytics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Internal Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .admin-home {
+            max-width: 1300px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .section-card {
+            background: rgba(10, 25, 47, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .section-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .section-card h1 {
+            font-size: 2rem;
+            color: #00cc00;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .section-card p {
+            font-size: 1.1rem;
+            color: #FFFFFF;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .section-card h2 {
+            font-size: 1.8rem;
+            color: #00cc00;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-card h2 i {
+            margin-right: 10px;
+            color: #FFD700;
+        }
+
+        .section-card ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-card li::before {
+            content: "💸";
+            margin-right: 10px;
+            color: #FFD700;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #1a3c34;
+        }
+
+        th {
+            padding: 15px;
+            font-size: 1rem;
+            color: #FFFFFF;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 15px;
+            font-size: 1rem;
+            color: #FFFFFF;
+        }
+
+        td[data-label] {
+            position: relative;
+        }
+
+        /* Action Buttons */
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            border-color: #FFD700;
+        }
+
+        .btn[style*="color: #FF4500"] {
+            background: rgba(255, 69, 0, 0.1);
+        }
+
+        .btn[style*="color: #00FF00"] {
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .btn[style*="color: #FF4500"]:hover {
+            background: #FF4500;
+            color: #FFFFFF;
+        }
+
+        .btn[style*="color: #00FF00"]:hover {
+            background: #00FF00;
+            color: #1a3c34;
+        }
+
+        .main-content {
+            max-width: 1300px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .footer-gradient {
+            padding: 20px;
+            background: linear-gradient(135deg, #0a192f, #1a3c34);
+            color: #ccc;
+            text-align: center;
+        }
+
+        .footer-gradient p {
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .section-card h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-card h2 {
+                font-size: 1.5rem;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 6px;
+            }
+
+            tbody td {
+                display: block;
+                text-align: left;
+                padding: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            tbody td:last-child {
+                border-bottom: none;
+            }
+
+            td[data-label]::before {
+                content: attr(data-label) ": ";
+                font-weight: bold;
+                color: #FFD700;
+                display: inline-block;
+                width: 100px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            th,
+            td {
+                padding: 18px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navMenu = document.getElementById('navMenu');
+            const navbar = document.getElementById('navbar');
+            const navLinks = document.querySelectorAll('.nav-btn');
+            const dataOverlay = document.getElementById('dataOverlay');
+            const floatingIcons = document.getElementById('floatingIcons');
+
+            // Mobile Menu Toggle
+            mobileMenu.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Active Link Highlight
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === window.location.pathname || (window.location.pathname === '/' && link.getAttribute('href') === 'adminHome')) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('scrolled', window.scrollY > 10);
+            });
+
+            // Date and Time Update
+            function updateDateTime() {
+                const now = new Date();
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+                document.getElementById('datetime').textContent = now.toLocaleString('en-US', options);
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // Dynamic Data Overlay Animation
+            function createDataNodes() {
+                const nodeCount = 8;
+                for (let i = 0; i < nodeCount; i++) {
+                    const node = document.createElement('div');
+                    node.classList.add('data-node');
+                    const angle = (i / nodeCount) * 2 * Math.PI;
+                    const radius = 120 + Math.random() * 60;
+                    node.style.left = `${175 + Math.cos(angle) * radius}px`;
+                    node.style.top = `${175 + Math.sin(angle) * radius}px`;
+                    node.style.animationDelay = `${i * 0.4}s`;
+                    dataOverlay.appendChild(node);
+                }
+            }
+            createDataNodes();
+
+            // Simulate Transaction Pulse Alert
+            setInterval(() => {
+                const randomNode = document.querySelector('.data-node:nth-child(' + Math.floor(Math.random() * 8 + 1) + ')');
+                if (randomNode) {
+                    randomNode.style.background = '#00cc00';
+                    setTimeout(() => {
+                        randomNode.style.background = '#FFD700';
+                    }, 1200);
+                }
+            }, 3500);
+
+            // Floating Icons Animation
+            const icons = [
+                'fa-chart-line', 'fa-dollar-sign', 'fa-credit-card', 'fa-wallet',
+                'fa-chart-bar', 'fa-money-bill', 'fa-exchange-alt', 'fa-piggy-bank'
+            ];
+
+            function createFloatingIcons() {
+                for (let i = 0; i < 10; i++) {
+                    const icon = document.createElement('i');
+                    icon.className = `fas ${icons[Math.floor(Math.random() * icons.length)]} floating-icon`;
+                    icon.style.left = `${Math.random() * 100}%`;
+                    icon.style.animationDelay = `${Math.random() * 8}s`;
+                    icon.style.animationDuration = `${6 + Math.random() * 4}s`;
+                    floatingIcons.appendChild(icon);
+                }
+            }
+            createFloatingIcons();
+        });
+    </script>
+</body>
+</html>

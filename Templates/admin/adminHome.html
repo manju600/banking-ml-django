@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Periodicity - Admin Dashboard</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Roboto Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <!-- Three.js for 3D Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Financial Data Background -->
+    <div class="data-background"></div>
+    <div class="data-overlay" id="dataOverlay"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo"><i class="fas fa-chart-line mr-2"></i>Transaction Analytics</a>
+            <div class="menu-toggle" id="mobileMenu">☰</div>
+            <div class="nav-menu" id="navMenu">
+                <div class="datetime">
+                    <span class="data-loader"></span>
+                    <span id="datetime"></span>
+                </div>
+                <a href="adminHome" class="nav-btn"><i class="fas fa-home mr-1"></i>Home</a>
+                <a href="userList" class="nav-btn"><i class="fas fa-user mr-1"></i>User Details</a>
+                <a href="log" class="nav-btn"><i class="fas fa-sign-out-alt mr-1"></i>Log Out</a>
+                <a href="#about" class="nav-btn"><i class="fas fa-info-circle mr-1"></i>About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Transaction Flow Animation -->
+    <section id="home" class="hero-section">
+        <canvas id="dataCanvas"></canvas>
+        <div class="hero-content">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 text-white">Admin Dashboard</h1>
+            <p class="text-lg md:text-xl mb-6 text-white">Leveraging Machine Learning to Detect Periodicity in Transactional Banking Data</p>
+        </div>
+    </section>
+    <div class="floating-icons" id="floatingIcons"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <section id="admin-overview" class="section-card">
+            <h2><i class="fas fa-user-shield"></i> Admin Overview</h2>
+            <p>
+                Welcome to the Transaction Analytics Admin Dashboard. As an admin, you oversee user management, periodicity detection, and system analytics to enhance financial planning through machine learning insights.
+            </p>
+        </section>
+
+        <section id="key-functions" class="section-card">
+            <h2><i class="fas fa-cogs"></i> Key Admin Functions</h2>
+            <ul style="text-align: left; max-width: 1000px; margin: 20px auto;">
+                <li><strong>User Management:</strong> Approve, edit, or deactivate user accounts for secure access.</li>
+                <li><strong>Periodicity Detection:</strong> Review and fine-tune ML-driven periodicity analysis parameters.</li>
+                <li><strong>Data Oversight:</strong> Monitor transactional data integrity and model inputs.</li>
+                <li><strong>Analytics Dashboard:</strong> Track periodicity detection metrics and model performance.</li>
+            </ul>
+        </section>
+
+        <section id="admin-tools" class="section-card">
+            <h2><i class="fas fa-tools"></i> Admin Tools</h2>
+            <ul style="text-align: left; max-width: 1000px; margin: 20px auto;">
+                <li>Real-time monitoring of transaction periodicity detection.</li>
+                <li>Secure audit logs for all admin actions.</li>
+                <li>Customizable ML model parameters for periodicity analysis.</li>
+                <li>Automated alerts for significant periodicity patterns or anomalies.</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-gradient" style="color: #ccc;">
+        <div class="container mx-auto text-center">
+            <p class="text">© 2025 Transaction Analytics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Internal Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .hero-section {
+            padding: 60px 20px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        #dataCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .main-content {
+            max-width: 1300px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .section-card {
+            background: rgba(10, 25, 47, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1300px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .section-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-card h2 {
+            font-size: 1.8rem;
+            color: #00cc00;
+            margin-bottom: 20px;
+        }
+
+        .section-card p,
+        .section-card li {
+            font-size: 1.1rem;
+            color: #FFFFFF;
+        }
+
+        .section-card ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-card li::before {
+            content: "💸";
+            margin-right: 10px;
+            color: #FFD700;
+        }
+
+        .footer-gradient {
+            padding: 20px;
+            background: linear-gradient(135deg, #0a192f, #1a3c34);
+            color: #ccc;
+            text-align: center;
+        }
+
+        .footer-gradient p {
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 768px) {
+            .hero-content h1 {
+                font-size: 4rem;
+            }
+
+            .hero-content p {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navMenu = document.getElementById('navMenu');
+            const navbar = document.getElementById('navbar');
+            const navLinks = document.querySelectorAll('.nav-btn');
+            const dataOverlay = document.getElementById('dataOverlay');
+            const floatingIcons = document.getElementById('floatingIcons');
+
+            // Mobile Menu Toggle
+            mobileMenu.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Active Link Highlight
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === window.location.pathname || (window.location.pathname === '/' && link.getAttribute('href') === 'adminHome')) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('scrolled', window.scrollY > 10);
+            });
+
+            // Date and Time Update
+            function updateDateTime() {
+                const now = new Date();
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+                document.getElementById('datetime').textContent = now.toLocaleString('en-US', options);
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            // Dynamic Data Overlay Animation
+            function createDataNodes() {
+                const nodeCount = 8;
+                for (let i = 0; i < nodeCount; i++) {
+                    const node = document.createElement('div');
+                    node.classList.add('data-node');
+                    const angle = (i / nodeCount) * 2 * Math.PI;
+                    const radius = 120 + Math.random() * 60;
+                    node.style.left = `${175 + Math.cos(angle) * radius}px`;
+                    node.style.top = `${175 + Math.sin(angle) * radius}px`;
+                    node.style.animationDelay = `${i * 0.4}s`;
+                    dataOverlay.appendChild(node);
+                }
+            }
+            createDataNodes();
+
+            // Simulate Transaction Pulse Alert
+            setInterval(() => {
+                const randomNode = document.querySelector('.data-node:nth-child(' + Math.floor(Math.random() * 8 + 1) + ')');
+                if (randomNode) {
+                    randomNode.style.background = '#00cc00';
+                    setTimeout(() => {
+                        randomNode.style.background = '#FFD700';
+                    }, 1200);
+                }
+            }, 3500);
+
+            // Floating Icons Animation
+            const icons = [
+                'fa-chart-line', 'fa-dollar-sign', 'fa-credit-card', 'fa-wallet',
+                'fa-chart-bar', 'fa-money-bill', 'fa-exchange-alt', 'fa-piggy-bank'
+            ];
+
+            function createFloatingIcons() {
+                for (let i = 0; i < 10; i++) {
+                    const icon = document.createElement('i');
+                    icon.className = `fas ${icons[Math.floor(Math.random() * icons.length)]} floating-icon`;
+                    icon.style.left = `${Math.random() * 100}%`;
+                    icon.style.animationDelay = `${Math.random() * 8}s`;
+                    icon.style.animationDuration = `${6 + Math.random() * 4}s`;
+                    floatingIcons.appendChild(icon);
+                }
+            }
+            createFloatingIcons();
+
+            // Transaction Flow Animation with Three.js
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('dataCanvas'), alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 20, 15);
+            scene.add(directionalLight);
+
+            // Create timeline base
+            const timelineGeometry = new THREE.PlaneGeometry(40, 20, 32, 32);
+            const timelineMaterial = new THREE.MeshPhongMaterial({
+                color: 0x1a3c34, // Dark financial green
+                side: THREE.DoubleSide,
+                shininess: 10
+            });
+            const timeline = new THREE.Mesh(timelineGeometry, timelineMaterial);
+            timeline.rotation.x = Math.PI / 2;
+            timeline.position.y = -1;
+            scene.add(timeline);
+
+            // Create data wave surface
+            const waveGeometry = new THREE.PlaneGeometry(40, 20, 32, 32);
+            const waveMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0.0 },
+                    color: { value: new THREE.Color(0x00cc00) },
+                    opacity: { value: 0.6 }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+                    uniform float time;
+                    void main() {
+                        vUv = uv;
+                        vec3 pos = position;
+                        pos.z += sin(pos.x * 0.1 + time) * cos(pos.y * 0.1 + time) * 0.5;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 color;
+                    uniform float opacity;
+                    varying vec2 vUv;
+                    void main() {
+                        gl_FragColor = vec4(color, opacity);
+                    }
+                `,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            const wave = new THREE.Mesh(waveGeometry, waveMaterial);
+            wave.rotation.x = Math.PI / 2;
+            scene.add(wave);
+
+            // Create transaction particles
+            const particleCount = 800;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+            const colors = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = Math.random() * 30 - 15; // x
+                positions[i * 3 + 1] = Math.random() * 2; // y
+                positions[i * 3 + 2] = Math.random() * 20 - 10; // z
+                velocities[i * 3] = 0; // x velocity
+                velocities[i * 3 + 1] = 0; // y velocity
+                velocities[i * 3 + 2] = -0.15 - Math.random() * 0.1; // z velocity
+                sizes[i] = 0.1 + Math.random() * 0.15;
+                colors[i * 3] = 0.0; // R
+                colors[i * 3 + 1] = 0.8 + Math.random() * 0.2; // G
+                colors[i * 3 + 2] = 0.0; // B
+            }
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particles.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+            particles.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                vertexColors: true,
+                sizeAttenuation: true,
+                transparent: true,
+                opacity: 0.9,
+                blending: THREE.AdditiveBlending
+            });
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            scene.add(particleSystem);
+
+            // Create periodicity filter
+            const filterGeometry = new THREE.PlaneGeometry(30, 5, 32, 32);
+            const filterMaterial = new THREE.MeshPhongMaterial({
+                color: 0xFFD700,
+                transparent: true,
+                opacity: 0.4,
+                side: THREE.DoubleSide,
+                shininess: 50
+            });
+            const filter = new THREE.Mesh(filterGeometry, filterMaterial);
+            filter.position.z = -5;
+            filter.rotation.y = Math.PI / 2;
+            scene.add(filter);
+
+            camera.position.set(0, 10, 20);
+            camera.lookAt(0, 0, 0);
+
+            // Mouse interaction
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Update data wave
+                waveMaterial.uniforms.time.value += 0.02;
+
+                // Update particle positions
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3] += velocities[i * 3];
+                    positions[i * 3 + 1] += velocities[i * 3 + 1] + Math.sin(positions[i * 3 + 2] * 0.3 + Date.now() * 0.002) * 0.01;
+                    positions[i * 3 + 2] += velocities[i * 3 + 2];
+
+                    // Mouse influence
+                    const dx = positions[i * 3] - (mouseX * 20);
+                    const dy = positions[i * 3 + 1] - (mouseY * 10);
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 4) {
+                        velocities[i * 3] += dx * 0.003;
+                        velocities[i * 3 + 1] += dy * 0.003;
+                    }
+
+                    // Periodicity filter interaction
+                    if (positions[i * 3 + 2] < -5 && positions[i * 3 + 2] > -5.5) {
+                        if (Math.random() < 0.75) { // 75% identified as periodic
+                            velocities[i * 3 + 2] *= 0.5; // Slow down
+                            colors[i * 3] = 0.0; // Green for periodic
+                            colors[i * 3 + 1] = 1.0;
+                            colors[i * 3 + 2] = 0.0;
+                        } else {
+                            velocities[i * 3 + 2] = 0; // Stop at filter
+                            colors[i * 3] = 1.0; // Yellow for non-periodic
+                            colors[i * 3 + 1] = 0.84;
+                            colors[i * 3 + 2] = 0.0;
+                        }
+                    }
+
+                    // Reset particles
+                    if (positions[i * 3 + 2] < -15 || Math.abs(positions[i * 3]) > 20 || positions[i * 3 + 1] > 5) {
+                        positions[i * 3] = Math.random() * 30 - 15;
+                        positions[i * 3 + 1] = Math.random() * 2;
+                        positions[i * 3 + 2] = 10;
+                        velocities[i * 3] = 0;
+                        velocities[i * 3 + 1] = 0;
+                        velocities[i * 3 + 2] = -0.15 - Math.random() * 0.1;
+                        colors[i * 3] = 0.0;
+                        colors[i * 3 + 1] = 0.8 + Math.random() * 0.2;
+                        colors[i * 3 + 2] = 0.0;
+                    }
+                }
+                particles.attributes.position.needsUpdate = true;
+                particles.attributes.color.needsUpdate = true;
+
+                // Animate filter
+                filter.rotation.x += Math.sin(Date.now() * 0.002) * 0.002;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize Handler
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+            });
+        });
+    </script>
+</body>
+</html>

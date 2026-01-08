@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine_Learning_to_Detect_Periodicity_in_Transactional_Banking_Data</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Roboto Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <style>
+        /* Ensure hero-content is visible */
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            color: #ffffff;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4); /* Semi-transparent background for contrast */
+            border-radius: 10px;
+        }
+        .hero-content h1, .hero-content p {
+            text-shadow: none; /* Remove glow effect */
+        }
+        .dollar-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 180%;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .dollar-emoji {
+            font-size: 60vw; /* Large size */
+            font-weight: 700; /* Bolder */
+            -webkit-text-stroke: 2px #000; /* Bold outline */
+            opacity: 0.2; /* Semi-transparent */
+            animation: float 6s ease-in-out infinite; /* Floating animation */
+            transition: color 4s ease; /* Smooth color transition */
+        }
+        .mini-dollar {
+            position: absolute;
+            font-size: 4rem; /* Smaller size for mini symbols */
+            opacity: 0.9;
+            pointer-events: none;
+            animation: emerge 4s ease-out forwards; /* Animation for mini dollars */
+            transform-origin: center;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+        @keyframes emerge {
+            0% {
+                transform: translate(0, 0) scale(0.5);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translate(calc(var(--dx) * 50vw), calc(var(--dy) * 50vh)) scale(1.5);
+                opacity: 0;
+            }
+        }
+        /* Navbar Styling */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 20;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .nav-logo {
+            font-size: 1.5rem;
+            color: #faf6f6; /* Light gray as provided */
+        }
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .nav-btn {
+            color: #e6dede; /* Light gray as provided */
+            text-decoration: none;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #f3eeee; /* Light gray as provided */
+        }
+        .datetime {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            color: #000; /* Black color for clock */
+            background: rgba(255, 255, 255, 0.8); /* Light background for readability */
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .data-loader {
+            display: none; /* Remove any loader animation */
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                background: #fff;
+                width: 200px;
+                padding: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dollar Sign Background -->
+    <div class="dollar-background" id="dollarBackground">
+        <div class="dollar-emoji">$</div>
+    </div>
+    <div class="voice-overlay" id="voiceOverlay"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo"><i class="fas fa-dollar-sign mr-2"></i>Detect_Periodicity_in_Transactional_Banking_Data</a>
+            <div class="menu-toggle" id="mobileMenu">☰</div>
+            <div class="nav-menu" id="navMenu">
+                <div class="datetime">
+                    <span id="digitalClock"></span>
+                    <span id="digitalDate"></span>
+                </div>
+                <a href="/" class="nav-btn"><i class="fas fa-home mr-1"></i>Home</a>
+                <a href="userLoginForm" class="nav-btn"><i class="fas fa-user mr-1"></i>User</a>
+                <a href="adminLoginForm" class="nav-btn"><i class="fas fa-user-shield mr-1"></i>Admin</a>
+                <a href="userRegisterForm" class="nav-btn"><i class="fas fa-user-plus mr-1"></i>Register</a>
+                <a href="#about" class="nav-btn"><i class="fas fa-info-circle mr-1"></i>About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Machine_Learning_to_Detect_Periodicity_in_Transactional_Banking_Data</h1>
+            <p class="text-lg md:text-xl mb-6">Enhancing Personal Finance with Machine Learning</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <section id="about" class="section-card">
+            <h2>💸 About BankML</h2>
+            <p>
+                BankML applies advanced machine learning to detect periodic patterns in transactional banking data, as explored in our research. By identifying monthly, bimonthly, quarterly, and annual transactions, our platform enables intelligent recommendation systems to forecast income and expenses, helping users optimize their financial planning.
+            </p>
+        </section>
+
+        <section id="how-it-works" class="section-card">
+            <h2>⚙️ How It Works</h2>
+            <ul>
+                <li><strong>Data Collection:</strong> Acquires anonymized banking transactions via Open Banking APIs, compliant with Directive (EU) 2015/2366.</li>
+                <li><strong>Data Preprocessing:</strong> Standardizes categories and titles, removes duplicates, and applies TF-IDF for transaction titles.</li>
+                <li><strong>ML Model Training:</strong> Trains Random Forest, SVM, KNN, and MLP models, with Random Forest achieving a mean MCC of 0.916 for periodicity detection.</li>
+                <li><strong>Periodicity Detection:</strong> Classifies transactions as monthly, bimonthly, quarterly, annual, or non-periodic for personalized financial insights.</li>
+            </ul>
+        </section>
+
+        <section id="features" class="section-card">
+            <h2>🚀 Features</h2>
+            <ul>
+                <li>High-accuracy periodicity detection using Random Forest (mean MCC: 0.916).</li>
+                <li>Real-time financial insights dashboard for income and expense forecasting.</li>
+                <li>Secure processing of anonymized banking data.</li>
+                <li>Explainable AI for transparent periodicity predictions, enhancing user trust.</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-gradient">
+        <div class="footer-container">
+            <p>© 2025 BankML. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#about">About Us</a>
+                <a href="#contact">Contact</a>
+                <a href="#privacy">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navMenu = document.getElementById('navMenu');
+            const navbar = document.getElementById('navbar');
+            const navLinks = document.querySelectorAll('.nav-btn');
+            const dollarBackground = document.getElementById('dollarBackground');
+            const dollarEmoji = document.querySelector('.dollar-emoji');
+
+            // Mobile Menu Toggle
+            mobileMenu.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Active Link Highlight
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === window.location.hash || (window.location.hash === '' && link.getAttribute('href') === '#home')) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('scrolled', window.scrollY > 10);
+            });
+
+            // // Digital Clock and Date Update
+            // function updateDateTime() {
+            //     const now = new Date();
+            //     const timeString = now.toLocaleTimeString('en-US', {
+            //         hour12: false,
+            //         hour: '2-digit',
+            //         minute: '2-digit',
+            //         second: '2-digit'
+            //     });
+            //     const dateString = now.toLocaleDateString('en-US', {
+            //         weekday: 'long',
+            //         year: 'numeric',
+            //         month: 'long',
+            //         day: 'numeric'
+            //     });
+            //     document.getElementById('digitalClock').textContent = timeString;
+            //     document.getElementById('digitalDate').textContent = dateString;
+            // }
+            // updateDateTime();
+            // setInterval(updateDateTime, 1000);
+
+            // Color Change for Large Dollar Emoji
+            const colors = ['#2e8b57', '#FFD700', '#4682b4', '#228b22', '#b8860b', '#4169e1']; // Financial-themed colors
+            let colorIndex = 0;
+
+            function changeDollarColor() {
+                dollarEmoji.style.color = colors[colorIndex];
+                colorIndex = (colorIndex + 1) % colors.length;
+            }
+            changeDollarColor();
+            setInterval(changeDollarColor, 4000); // 4s as per provided CSS
+
+            // Mini Dollar Symbols Animation in Circular Pattern
+            function createMiniDollars() {
+                const count = 12; // 12 symbols for a full circle (360° / 30° = 12)
+                const angleStep = (2 * Math.PI) / count; // 30° in radians
+
+                for (let i = 0; i < count; i++) {
+                    const angle = i * angleStep;
+                    const miniDollar = document.createElement('div');
+                    miniDollar.className = 'mini-dollar';
+                    miniDollar.textContent = '$';
+                    // Calculate direction using cos and sin for circular pattern
+                    const dx = Math.cos(angle);
+                    const dy = Math.sin(angle);
+                    miniDollar.style.setProperty('--dx', dx);
+                    miniDollar.style.setProperty('--dy', dy);
+                    miniDollar.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    miniDollar.style.animationDuration = `${2 + Math.random() * 2}s`; // Random duration 2-4s
+                    dollarBackground.appendChild(miniDollar);
+
+                    // Remove after animation
+                    miniDollar.addEventListener('animationend', () => {
+                        miniDollar.remove();
+                    });
+                }
+            }
+
+            // Create mini dollars periodically
+            createMiniDollars();
+            setInterval(createMiniDollars, 1000);
+        });
+    </script>
+</body>
+</html>
